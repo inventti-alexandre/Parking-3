@@ -8,6 +8,7 @@ namespace Parking
 {
     public class Parking
     {
+
         public List<Car> CarsList { get; }
         public List<Transaction> TransactionsList { get; }
         public int EarnedMoney { get; set; }
