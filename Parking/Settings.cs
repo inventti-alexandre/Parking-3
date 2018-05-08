@@ -21,7 +21,9 @@ namespace Parking
         public static double Fine { get; }
         static Settings()
         {
-
+            Timeout = 5;
+            ParkingSpace = 15;
+            Fine = 2;
         }
     }
 }
