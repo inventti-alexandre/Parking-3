@@ -8,7 +8,7 @@ namespace Parking
 {
     public class Parking
     {
-
+        private static Lazy<Parking> instance = new Lazy<Parking>(() => new Parking()); 
         public List<Car> CarsList { get; }
         public List<Transaction> TransactionsList { get; }
         public int EarnedMoney { get; set; }
@@ -27,10 +27,15 @@ namespace Parking
             }
         }
              
-        public Parking()
+        private Parking()
         {
             CarsList = new List<Car>();
             TransactionsList = new List<Transaction>();
+        }
+
+        public static Parking GetInstanse()
+        {
+            return instance.Value;
         }
 
         public void AddCar(Car car)
