@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace Parking
 {
-    class Transaction
+    public class Transaction
     {
+        public DateTime TransactionTime { get; }
+        public string CarId { get; }
+        public int SpentMoney { get; }
+
+        public Transaction(string carId,int spentMoney)
+        {
+            TransactionTime = DateTime.Now;
+            CarId = carId;
+            SpentMoney = spentMoney;
+        }
     }
 }
