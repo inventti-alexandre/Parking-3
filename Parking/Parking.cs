@@ -12,6 +12,20 @@ namespace Parking
         public List<Car> CarsList { get; }
         public List<Transaction> TransactionsList { get; }
         public int EarnedMoney { get; set; }
+        public int FreePlaces
+        {
+            get
+            {
+                return settings.ParkingSpace - CarsList.Count;
+            }
+        }
+        public int EngagedPlaces
+        {
+            get
+            {
+                return CarsList.Count;
+            }
+        }
              
         public Parking(Settings settings)
         {
