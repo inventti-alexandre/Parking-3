@@ -28,7 +28,7 @@ namespace Parking
         /// <summary>
         /// Car's balance
         /// </summary>
-        public int Balance { get; set; }
+        public double Balance { get; set; }
         /// <summary>
         /// Type of car
         /// </summary>
@@ -38,9 +38,10 @@ namespace Parking
         /// </summary>
         /// <param name="balance">Initial amount of money.</param>
         /// <param name="type"><see cref="CarType"/> type of car.</param>
-        public Car(int balance, CarType type)
+        public Car(double balance, CarType type)
         {
             Id = Guid.NewGuid().ToString();
+            Balance = balance;
             CarType = type;
         }
     }

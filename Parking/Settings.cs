@@ -19,7 +19,7 @@ namespace Parking
         /// <summary>
         /// Store a price set for each value of <see cref="CarType"/>.
         /// </summary>
-        public static Dictionary<CarType, int> PriceSet { get; } = new Dictionary<CarType, int>
+        public static Dictionary<CarType, double> PriceSet { get; } = new Dictionary<CarType, double>
         {
             {CarType.Truck,5 },
             {CarType.Passenger,3 },
