@@ -83,17 +83,19 @@ namespace Parking
             throw new NotImplementedException();       
         }
 
-        private void changeParkingState(object obj)
+        private async void changeParkingState(object obj)
         {
-            CarsList.ForEach(car =>
-            {
-                double requiredMoney;
-                Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney);
-                double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
-                car.Balance -= spentMoney;
-                this.EarnedMoney += spentMoney;
-                Transaction tr = new Transaction(car.Id, spentMoney);
-                TransactionsList.Add(tr);
+            await Task.Run(() => {
+                CarsList.ForEach(car =>
+                {
+                    double requiredMoney;
+                    Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney);
+                    double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
+                    car.Balance -= spentMoney;
+                    this.EarnedMoney += spentMoney;
+                    Transaction tr = new Transaction(car.Id, spentMoney);
+                    TransactionsList.Add(tr);
+                });
             });
         }
     }
