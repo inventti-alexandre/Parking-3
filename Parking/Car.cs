@@ -23,7 +23,7 @@ namespace Parking
     {
         /// <summary>
         /// Unique identifier of car
-        /// </summary>
+        /// </summary> 
         public readonly string Id;
         /// <summary>
         /// Car's balance
@@ -33,6 +33,17 @@ namespace Parking
         /// Type of car
         /// </summary>
         public CarType CarType { get; }
+        /// <summary>
+        /// An event raising when <see cref="Parking"/> debits money from <see cref="Car"/> account
+        /// </summary>
+        private event EventHandler Timeout;
+        /// <summary>
+        /// Method-wrapper for <see cref="Car.Timeout"/> event
+        /// </summary>
+        public void OnTimeout()
+        {
+            Timeout?.Invoke(this, new EventArgs());
+        }
         /// <summary>
         /// Initialize new instance of <see cref="Car"/>
         /// </summary>

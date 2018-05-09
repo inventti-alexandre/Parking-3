@@ -63,7 +63,7 @@ namespace Parking
 
             if(CarsList.Contains(car))
             {
-                if (car.Balance > 0)
+                if (car.Balance >= 0)
                     CarsList.Remove(car);
                 else
                     throw new InvalidOperationException("This car's balance is less than 0. Please, top up an account");
