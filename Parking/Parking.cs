@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Parking
 {
     public class Parking
     {
+        private Timer timer;
+
         private static Lazy<Parking> instance = new Lazy<Parking>(() => new Parking()); 
         public List<Car> CarsList { get; }
         public List<Transaction> TransactionsList { get; }
-        public int EarnedMoney { get; set; }
+        public double EarnedMoney { get; set; }
         public int FreePlaces
         {
             get
@@ -29,6 +32,7 @@ namespace Parking
              
         private Parking()
         {
+            timer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
             CarsList = new List<Car>();
             TransactionsList = new List<Transaction>();
         }
@@ -77,6 +81,20 @@ namespace Parking
         public void ShowTransactionsLog()
         {
             throw new NotImplementedException();       
+        }
+
+        private void changeParkingState(object obj)
+        {
+            CarsList.ForEach(car =>
+            {
+                double requiredMoney;
+                Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney);
+                double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
+                car.Balance -= spentMoney;
+                this.EarnedMoney += spentMoney;
+                Transaction tr = new Transaction(car.Id, spentMoney);
+                TransactionsList.Add(tr);
+            });
         }
     }
 }

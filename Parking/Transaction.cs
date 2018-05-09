@@ -10,9 +10,9 @@ namespace Parking
     {
         public DateTime TransactionTime { get; }
         public string CarId { get; }
-        public int SpentMoney { get; }
+        public double SpentMoney { get; }
 
-        public Transaction(string carId,int spentMoney)
+        public Transaction(string carId,double spentMoney)
         {
             TransactionTime = DateTime.Now;
             CarId = carId;
