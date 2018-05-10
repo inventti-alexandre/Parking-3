@@ -12,8 +12,8 @@ namespace ConsoleParking
         static void Main(string[] args)
         {
             ParkingEmulator p = ParkingEmulator.GetInstanse();
-            Car c = new Car("Blue car", 20, CarType.Bus);
-            Car b = new Car("Blue car", 30, CarType.Motorcycle);
+            Car c = new Car("Blue car", 50, CarType.Bus);
+            Car b = new Car("Green car", 50, CarType.Motorcycle);
             try
             {
                 p.AddCar(c);
@@ -23,6 +23,7 @@ namespace ConsoleParking
             {
                 Console.WriteLine(e.Message);
             }
+            Console.Read();
         }
     }
 }

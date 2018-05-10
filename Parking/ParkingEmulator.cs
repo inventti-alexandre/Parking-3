@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,32 +11,42 @@ namespace Parking
 {
     public class ParkingEmulator
     {
-        private Timer timer;
+        private Timer stateTimer;
+        private Timer logTimer;
+        private List<Car> carsList;
+        private List<Transaction> transactionsList;
+        private static Lazy<ParkingEmulator> instance = new Lazy<ParkingEmulator>(() => new ParkingEmulator());
+        private string fileName= "Transactions.log";
 
-        private static Lazy<ParkingEmulator> instance = new Lazy<ParkingEmulator>(() => new ParkingEmulator()); 
-        public List<Car> CarsList { get; }
-        public List<Transaction> TransactionsList { get; }
         public double EarnedMoney { get; set; }
         public int FreePlaces
         {
             get
             {
-                return Settings.ParkingSpace - CarsList.Count;
+                return Settings.ParkingSpace - carsList.Count;
             }
         }
         public int EngagedPlaces
         {
             get
             {
-                return CarsList.Count;
+                return carsList.Count;
             }
         }
-             
+        private string filePath
+        {
+            get
+            {
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                return Path.Combine(directory, fileName);
+            }
+        }     
         private ParkingEmulator()
         {
-            timer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
-            CarsList = new List<Car>();
-            TransactionsList = new List<Transaction>();
+            stateTimer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
+            logTimer = new Timer(logTransactions, new object(), 0, 10000);
+            carsList = new List<Car>();
+            transactionsList = new List<Transaction>();
         }
 
         public static ParkingEmulator GetInstanse()
@@ -48,9 +60,9 @@ namespace Parking
             {
                 throw new ArgumentNullException(String.Format("Input '{0}' argumet was null", nameof(car)));
             }
-            if (!CarsList.Contains(car,new CarEqualityComparer()))
+            if (!carsList.Contains(car,new CarEqualityComparer()))
             {
-                CarsList.Add(car);
+                carsList.Add(car);
             }
             else
             {
@@ -65,10 +77,10 @@ namespace Parking
                 throw new ArgumentNullException(String.Format("Input '{0}' argument was null", nameof(car)));
             }
 
-            if(CarsList.Contains(car,new CarEqualityComparer()))
+            if(carsList.Contains(car,new CarEqualityComparer()))
             {
                 if (car.Balance > 0)
-                    CarsList.Remove(car);
+                    carsList.Remove(car);
                 else
                     throw new InvalidOperationException("This car's balance is less than 0. Please, top up an account");
             }
@@ -78,15 +90,48 @@ namespace Parking
             }
 
         }
-        public void ShowTransactionsLog()
+        public async string GetTransactionsLog()
         {
-            throw new NotImplementedException();       
+            return await Task.Run(() =>
+            {
+                using (FileStream fs = new File.Open(filePath, FileMode.Open))
+                using (StreamReader sr = new StreamReader(fs))
+                {
+
+                }
+                return String.Empty;
+            });
+                    
+        }
+
+        private async void logTransactions(object obj)
+        {
+            await Task.Run(() =>
+            {
+                
+                using (FileStream stream = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Append))
+                using (StreamWriter sw = new StreamWriter(stream))
+                {
+                    double sum;
+                    lock (transactionsList)
+                    {
+                        sum = transactionsList.Sum(tr => tr.SpentMoney);
+                        transactionsList.Clear();
+                    }
+                    string strToLog = String.Format("{0}{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
+                        DateTime.Now.ToShortDateString(),
+                        DateTime.Now.ToShortTimeString(),
+                        sum);
+                    sw.WriteLine(strToLog);
+                }
+            });
         }
 
         private async void changeParkingState(object obj)
         {
             await Task.Run(() => {
-                CarsList.ForEach(car =>
+                carsList.ForEach(car =>
                 {
                     double requiredMoney;
                     if(Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney))
@@ -95,7 +140,7 @@ namespace Parking
                         car.Balance -= spentMoney;
                         this.EarnedMoney += spentMoney;
                         Transaction tr = new Transaction(car.Id, spentMoney);
-                        TransactionsList.Add(tr);
+                        transactionsList.Add(tr);
                     }
                     
                 });
