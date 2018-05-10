@@ -48,7 +48,7 @@ namespace Parking
             {
                 throw new ArgumentNullException(String.Format("Input '{0}' argumet was null", nameof(car)));
             }
-            if (!CarsList.Contains(car))
+            if (!CarsList.Contains(car,new CarEqualityComparer()))
             {
                 CarsList.Add(car);
             }
@@ -65,7 +65,7 @@ namespace Parking
                 throw new ArgumentNullException(String.Format("Input '{0}' argument was null", nameof(car)));
             }
 
-            if(CarsList.Contains(car))
+            if(CarsList.Contains(car,new CarEqualityComparer()))
             {
                 if (car.Balance > 0)
                     CarsList.Remove(car);
