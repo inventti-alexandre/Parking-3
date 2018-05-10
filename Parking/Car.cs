@@ -22,11 +22,11 @@ namespace Parking
     public class Car
     {
         /// <summary>
-        /// Unique identifier of car
+        /// Car identifier
         /// </summary>
         public readonly string Id;
         /// <summary>
-        /// Car's balance
+        /// Car balance
         /// </summary>
         public double Balance { get; set; }
         /// <summary>
@@ -38,9 +38,9 @@ namespace Parking
         /// </summary>
         /// <param name="balance">Initial amount of money.</param>
         /// <param name="type"><see cref="CarType"/> type of car.</param>
-        public Car(double balance, CarType type)
+        public Car(string id, double balance, CarType type)
         {
-            Id = Guid.NewGuid().ToString();
+            Id = id;
             Balance = balance;
             CarType = type;
         }
