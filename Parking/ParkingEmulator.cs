@@ -54,7 +54,7 @@ namespace Parking
             }
             else
             {
-                throw new ArgumentException(String.Format("The parking already contains this car!"));
+                throw new ArgumentException(String.Format("The parking already contains a car with '{0}' description",car.Id));
             }
         }
 
