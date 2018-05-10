@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Parking
 {
-    public class Parking
+    public class ParkingEmulator
     {
         private Timer timer;
 
-        private static Lazy<Parking> instance = new Lazy<Parking>(() => new Parking()); 
+        private static Lazy<ParkingEmulator> instance = new Lazy<ParkingEmulator>(() => new ParkingEmulator()); 
         public List<Car> CarsList { get; }
         public List<Transaction> TransactionsList { get; }
         public double EarnedMoney { get; set; }
@@ -30,14 +30,14 @@ namespace Parking
             }
         }
              
-        private Parking()
+        private ParkingEmulator()
         {
             timer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
             CarsList = new List<Car>();
             TransactionsList = new List<Transaction>();
         }
 
-        public static Parking GetInstanse()
+        public static ParkingEmulator GetInstanse()
         {
             return instance.Value;
         }

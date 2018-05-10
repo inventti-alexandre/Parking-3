@@ -8,7 +8,7 @@ using System.Configuration;
 namespace Parking
 {   
     /// <summary>
-    /// Represents a set of settings used in <see cref="Parking"/> class instances
+    /// Represents a set of settings used in <see cref="ParkingEmulator"/> class instances
     /// </summary>
     public static class Settings
     {
