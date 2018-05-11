@@ -44,8 +44,8 @@ namespace Parking
         }     
         private ParkingEmulator()
         {
-            stateTimer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
-            logTimer = new Timer(logTransactions, new object(), 0, 5000);
+            stateTimer = new Timer(changeParkingState, new object(), Settings.Timeout, Settings.Timeout);
+            logTimer = new Timer(logTransactions, new object(), 60000, 60000);
             CarsList = new List<Car>();
             transactionsList = new List<Transaction>();
         }
