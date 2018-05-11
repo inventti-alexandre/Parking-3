@@ -4,25 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Parking;
+using System.Threading;
 
 namespace ConsoleParking
 {
     class Program
     {
+        static ParkingEmulator p = ParkingEmulator.GetInstanse();
+        static Timer t;
         static void Main(string[] args)
         {
-            ParkingEmulator p = ParkingEmulator.GetInstanse();
-            Car c = new Car("Blue car", 20, CarType.Bus);
-            Car b = new Car("Blue car", 30, CarType.Motorcycle);
+            t = new Timer(doSmth,new object(),5000,5000);
+            Car c = new Car("Blue car", 50, CarType.Bus);
+            Car b = new Car("Green car", 50, CarType.Motorcycle);
+            p.AddCar(c);
+            p.AddCar(b);
+            Console.Read();
+        }
+
+        static void doSmth(object obj)
+        {
             try
             {
-                p.AddCar(c);
-                p.AddCar(b);
+
+                //Console.WriteLine("Last money: "+p.GetLastEarnedMoney().GetAwaiter().GetResult());
+                Console.WriteLine("Free places: " + p.FreePlaces.ToString());
+                Console.WriteLine("Engaged places: " + p.EngagedPlaces.ToString());
+                Console.WriteLine("Log: " + p.GetTransactionsLog().GetAwaiter().GetResult());
             }
-            catch(ArgumentException e)
+            catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Exception: \n"+e.Message);
             }
         }
+
+
     }
 }
