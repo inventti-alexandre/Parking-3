@@ -14,44 +14,93 @@ namespace ConsoleParking
         static Timer t;
         static void Main(string[] args)
         {
-            ShowBasicMenu();
-            var key=Console.ReadKey();
-            switch (key.KeyChar)
+            do
             {
-                case '1':
-                    DoFirstMenuItemChosen();
-                    break;
-                case '2':
-                    DoSecondMenuItemChosen();
-                    break;
-                case '3':
-                    DoThirdMenuItemChosen();
-                    break;
-                case '4':
-                    DoFourthMenuItemChosen();
-                    break;
-                case '5':
-                    DoFifthMenuItemChosen();
-                    break;
-
-
-
-            }
+                ShowBasicMenu();
+                var key = Console.ReadKey();
+                switch (key.KeyChar)
+                {
+                    case '1':
+                        DoFirstMenuItemChosen();
+                        break;
+                    case '2':
+                        DoSecondMenuItemChosen();
+                        break;
+                    case '3':
+                        DoThirdMenuItemChosen();
+                        break;
+                    case '4':
+                        DoFourthMenuItemChosen();
+                        break;
+                    case '5':
+                        DoFifthMenuItemChosen();
+                        break;
+                    case '6':
+                        DoSixthMenuItemChosen();
+                        break;
+                    case '7':
+                        DoSeventhMenuItemChosen();
+                        break;
+                    case '8':
+                        DoEighthMenuItemChosen();
+                        break;
+                    case '9':
+                        DoNinethMenuItemChosen();
+                        break;
+                    case '0':
+                        DoZerothMenuItemChosen();
+                        break;
+                    case 'x':
+                        DoXMenuitemChosen();
+                        break;
+                    default:
+                        Console.WriteLine("Nothing correct chosen!");
+                        break;
+                }
+            } while (true);
+            
+        }
+        static void DoXMenuitemChosen()
+        {
+            Environment.Exit(0);
+        }
+        static void DoZerothMenuItemChosen()
+        {
+            Console.Clear();
+        }
+        static void DoNinethMenuItemChosen()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Amount of engaged places: {0}",p.EngagedPlaces);
+        }
+        static void DoEighthMenuItemChosen()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Amount of free places: {0}",p.FreePlaces);
+        }
+        static async void DoSeventhMenuItemChosen()
+        {
+            Console.WriteLine();
+            Console.WriteLine(String.Format("All transactions: {0}{1}",Environment.NewLine,await p.GetTransactionsLog()));
         }
         static void DoSixthMenuItemChosen()
         {
-            Console.WriteLine(String.Format("Transactions during the last minute:{0}{1}",Environment.NewLine,p. );
+            Console.WriteLine();
+            Console.WriteLine(String.Format("Transactions during the last minute:{0}{1}",Environment.NewLine, p.GetLastTranscations() ));
         }
         static void DoFifthMenuItemChosen()
         {
-            Console.WriteLine(String.Format("All earned money: {0:D2}",p.EarnedMoney);
+            Console.WriteLine();
+            Console.WriteLine(String.Format("All earned money: {0:C2}",p.EarnedMoney));
         }
         static async void DoFourthMenuItemChosen()
         {
+            Console.WriteLine();
             Console.WriteLine(String.Format("Earned money during the last minute: {0:D2}", await p.GetLastEarnedMoney()));
         }
         static void DoThirdMenuItemChosen()
         {
+            Console.WriteLine();
             if (p.CarsList.Count != 0)
             {
                 int carNumber;
@@ -68,7 +117,7 @@ namespace ConsoleParking
                 }
                 while (!Int32.TryParse(Console.ReadLine(), out carNumber) || carNumber >= p.CarsList.Count);
 
-                Car car = p.CarsList[carNumber - 1];
+                Car car = p.CarsList[carNumber];
 
                 Console.WriteLine(String.Format("Current balance is: {0:D2}",car.Balance));
                 double money;
@@ -83,6 +132,8 @@ namespace ConsoleParking
 
                 Console.WriteLine("Operation completed successfully!");
                 Console.WriteLine(String.Format("Current balance is: {0:D2}", car.Balance));
+                Console.Beep();
+                Console.ReadLine();
             }
             else
             {
@@ -91,6 +142,7 @@ namespace ConsoleParking
         }
         static void DoSecondMenuItemChosen()
         {
+            Console.WriteLine();
             if (p.CarsList.Count != 0)
             {
                 int carNumber;
@@ -100,18 +152,20 @@ namespace ConsoleParking
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < p.CarsList.Count; i++)
                     {
-                        sb.AppendFormat("{0}.{1}", i, p.CarsList[i]);
+                        sb.AppendFormat("{0}.{1}", i, p.CarsList[i].Id);
                         sb.AppendLine();
                     }
                     Console.WriteLine(sb.ToString());
                 }
                 while (!Int32.TryParse(Console.ReadLine(), out carNumber) || carNumber >= p.CarsList.Count);
 
-                Car car = p.CarsList[carNumber - 1];
+                Car car = p.CarsList[carNumber];
                 try
                 {
                     p.RemoveCar(car);
                     Console.WriteLine(String.Format("Car '{0}' has successfully been removed from parking",car.Id));
+                    Console.Beep();
+                    Console.ReadLine();
                 }
                 catch(InvalidOperationException e)
                 {
@@ -126,6 +180,7 @@ namespace ConsoleParking
         static void DoFirstMenuItemChosen()
         {
             Console.Clear();
+            Console.WriteLine();
             Console.WriteLine("Type a description of a car and press 'Enter'");
             string carId = Console.ReadLine();
 
@@ -169,6 +224,7 @@ namespace ConsoleParking
                 p.AddCar(car);
                 Console.WriteLine(String.Format("Car {0} has succesfully been added to parking!",car.Id));
                 Console.Beep();
+                Console.ReadLine();
             }
             catch(ArgumentException e)
             {
@@ -178,6 +234,7 @@ namespace ConsoleParking
 
         static void ShowBasicMenu()
         {
+            Console.Clear();
             Console.WriteLine("Hi! Here is some demo parking. Use numbers on your keyboard for surfing.\n\n");
             Console.WriteLine("1.Add a car");
             Console.WriteLine("2.Remove a car");

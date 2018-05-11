@@ -125,6 +125,13 @@ namespace Parking
             });
         }
 
+        public string GetLastTranscations()
+        {
+            StringBuilder sb = new StringBuilder();
+            transactionsList.ForEach(tr => sb.AppendLine(tr.ToString()).AppendLine());
+            return sb.ToString();
+        }
+
         private async void logTransactions(object obj)
         {
             
