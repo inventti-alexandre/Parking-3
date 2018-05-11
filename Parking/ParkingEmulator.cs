@@ -13,24 +13,25 @@ namespace Parking
     {
         private Timer stateTimer;
         private Timer logTimer;
-        private List<Car> carsList;
+        
         private List<Transaction> transactionsList;
         private static Lazy<ParkingEmulator> instance = new Lazy<ParkingEmulator>(() => new ParkingEmulator());
         private string fileName= "Transactions.log";
 
+        public List<Car> CarsList { get; }
         public double EarnedMoney { get; set; }
         public int FreePlaces
         {
             get
             {
-                return Settings.ParkingSpace - carsList.Count;
+                return Settings.ParkingSpace - CarsList.Count;
             }
         }
         public int EngagedPlaces
         {
             get
             {
-                return carsList.Count;
+                return CarsList.Count;
             }
         }
         private string filePath
@@ -45,7 +46,7 @@ namespace Parking
         {
             stateTimer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
             logTimer = new Timer(logTransactions, new object(), 0, 5000);
-            carsList = new List<Car>();
+            CarsList = new List<Car>();
             transactionsList = new List<Transaction>();
         }
 
@@ -58,15 +59,15 @@ namespace Parking
         {
             if (car == null)
             {
-                throw new ArgumentNullException(String.Format("Input '{0}' argumet was null", nameof(car)));
+                throw new ArgumentNullException(String.Format("Input '{0}' argumet was null!", nameof(car)));
             }
-            if (!carsList.Contains(car,new CarEqualityComparer()))
+            if (!CarsList.Contains(car,new CarEqualityComparer()))
             {
-                carsList.Add(car);
+                CarsList.Add(car);
             }
             else
             {
-                throw new ArgumentException(String.Format("The parking already contains a car with '{0}' description",car.Id));
+                throw new ArgumentException(String.Format("The parking already contains a car with '{0}' description! Choose another one and try again!",car.Id));
             }
         }
 
@@ -74,15 +75,15 @@ namespace Parking
         {
             if (car == null)
             {
-                throw new ArgumentNullException(String.Format("Input '{0}' argument was null", nameof(car)));
+                throw new ArgumentNullException(String.Format("Input '{0}' argument was null!", nameof(car)));
             }
 
-            if(carsList.Contains(car,new CarEqualityComparer()))
+            if(CarsList.Contains(car,new CarEqualityComparer()))
             {
                 if (car.Balance > 0)
-                    carsList.Remove(car);
+                    CarsList.Remove(car);
                 else
-                    throw new InvalidOperationException("This car's balance is less than 0. Please, top up an account");
+                    throw new InvalidOperationException("This car's balance is less than 0. Please, top up an account and try again!");
             }
             else
             {
@@ -124,6 +125,13 @@ namespace Parking
             });
         }
 
+        public string GetLastTranscations()
+        {
+            StringBuilder sb = new StringBuilder();
+            transactionsList.ForEach(tr => sb.AppendLine(tr.ToString()).AppendLine());
+            return sb.ToString();
+        }
+
         private async void logTransactions(object obj)
         {
             
@@ -156,7 +164,7 @@ namespace Parking
             await Task.Run(() => {
                 lock (transactionsList)
                 {
-                    carsList.ForEach(car =>
+                    CarsList.ForEach(car =>
                     {
                         double requiredMoney;
                         if (Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney))
