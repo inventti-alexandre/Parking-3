@@ -44,7 +44,7 @@ namespace Parking
         private ParkingEmulator()
         {
             stateTimer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
-            logTimer = new Timer(logTransactions, new object(), 0, 10000);
+            logTimer = new Timer(logTransactions, new object(), 0, 5000);
             carsList = new List<Car>();
             transactionsList = new List<Transaction>();
         }
@@ -94,35 +94,59 @@ namespace Parking
         {
             return Task.Run(() =>
             {
-                using (FileStream fs = File.Open(filePath, FileMode.Open))
-                using (StreamReader sr = new StreamReader(fs))
+                StringBuilder sb = new StringBuilder();
+                using (FileStream fs = File.Open(filePath, FileMode.Open,FileAccess.Read,FileShare.Write))
                 {
-                    
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string allInfo = sr.ReadToEnd();
+                        string[] transactions = allInfo.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var transaction in transactions)
+                        {
+                            string[] parts = transaction.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                            sb.AppendLine(String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
+                                Environment.NewLine,
+                                parts[1],
+                                parts[2],
+                                parts[3]));
+                        }
+                    }
                 }
-                return String.Empty;
+                return sb.ToString();
             });      
+        }
+
+        public Task<double> GetLastEarnedMoney()
+        {
+            return Task.Run(() =>
+            {
+                return Convert.ToDouble(File.ReadLines(filePath).Last());
+            });
         }
 
         private async void logTransactions(object obj)
         {
+            
             await Task.Run(() =>
             {
-                using (FileStream stream = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Append))
-                using (StreamWriter sw = new StreamWriter(stream))
+                using (FileStream fs = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Append,FileAccess.Write,FileShare.Read))
                 {
-                    double sum;
-                    lock (transactionsList)
+                    using (StreamWriter sw = new StreamWriter(fs))
                     {
-                        sum = transactionsList.Sum(tr => tr.SpentMoney);
-                        this.EarnedMoney += sum;
-                        transactionsList.Clear();
+                        double sum;
+                        lock (transactionsList)
+                        {
+                            sum = transactionsList.Sum(tr => tr.SpentMoney);
+                            this.EarnedMoney += sum;
+                            transactionsList.Clear();
+                        }
+                        string strToLog = String.Format("#{0}{1}{0}{2}{0}{3}",
+                            Environment.NewLine,
+                            DateTime.Now.ToShortDateString(),
+                            DateTime.Now.ToShortTimeString(),
+                            sum);
+                        sw.WriteLine(strToLog);
                     }
-                    string strToLog = String.Format("{0}{1}{0}{2}{0}{3}",
-                        Environment.NewLine,
-                        DateTime.Now.ToShortDateString(),
-                        DateTime.Now.ToShortTimeString(),
-                        sum);
-                    sw.WriteLine(strToLog);
                 }
             });
         }
