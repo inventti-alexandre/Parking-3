@@ -144,6 +144,7 @@ namespace ConsoleParking
             else
             {
                 Console.WriteLine("There are no cars in parking!");
+                Console.ReadLine();
             }
         }
         static void DoSecondMenuItemChosen()
@@ -182,6 +183,7 @@ namespace ConsoleParking
             else
             {
                 Console.WriteLine("Nothing to remove from parking!");
+                Console.ReadLine();
             }
         }
         static void DoFirstMenuItemChosen()
