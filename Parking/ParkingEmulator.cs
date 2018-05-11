@@ -90,25 +90,23 @@ namespace Parking
             }
 
         }
-        public async string GetTransactionsLog()
+        public Task<string> GetTransactionsLog()
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
-                using (FileStream fs = new File.Open(filePath, FileMode.Open))
+                using (FileStream fs = File.Open(filePath, FileMode.Open))
                 using (StreamReader sr = new StreamReader(fs))
                 {
-
+                    
                 }
                 return String.Empty;
-            });
-                    
+            });      
         }
 
         private async void logTransactions(object obj)
         {
             await Task.Run(() =>
             {
-                
                 using (FileStream stream = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Append))
                 using (StreamWriter sw = new StreamWriter(stream))
                 {
@@ -116,6 +114,7 @@ namespace Parking
                     lock (transactionsList)
                     {
                         sum = transactionsList.Sum(tr => tr.SpentMoney);
+                        this.EarnedMoney += sum;
                         transactionsList.Clear();
                     }
                     string strToLog = String.Format("{0}{1}{0}{2}{0}{3}",
@@ -131,19 +130,22 @@ namespace Parking
         private async void changeParkingState(object obj)
         {
             await Task.Run(() => {
-                carsList.ForEach(car =>
+                lock (transactionsList)
                 {
-                    double requiredMoney;
-                    if(Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney))
+                    carsList.ForEach(car =>
                     {
-                        double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
-                        car.Balance -= spentMoney;
-                        this.EarnedMoney += spentMoney;
-                        Transaction tr = new Transaction(car.Id, spentMoney);
-                        transactionsList.Add(tr);
-                    }
-                    
-                });
+                        double requiredMoney;
+                        if (Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney))
+                        {
+                            double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
+                            car.Balance -= spentMoney;
+                            this.EarnedMoney += spentMoney;
+                            Transaction tr = new Transaction(car.Id, spentMoney);
+                            transactionsList.Add(tr);
+                        }
+
+                    });
+                } 
             });
         }
     }
