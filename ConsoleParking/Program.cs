@@ -72,31 +72,37 @@ namespace ConsoleParking
         {
             Console.WriteLine();
             Console.WriteLine("Amount of engaged places: {0}",p.EngagedPlaces);
+            Console.ReadLine();
         }
         static void DoEighthMenuItemChosen()
         {
             Console.WriteLine();
             Console.WriteLine("Amount of free places: {0}",p.FreePlaces);
+            Console.ReadLine();
         }
         static async void DoSeventhMenuItemChosen()
         {
             Console.WriteLine();
             Console.WriteLine(String.Format("All transactions: {0}{1}",Environment.NewLine,await p.GetTransactionsLog()));
+            Console.ReadLine();
         }
         static void DoSixthMenuItemChosen()
         {
             Console.WriteLine();
             Console.WriteLine(String.Format("Transactions during the last minute:{0}{1}",Environment.NewLine, p.GetLastTranscations() ));
+            Console.ReadLine();
         }
         static void DoFifthMenuItemChosen()
         {
             Console.WriteLine();
-            Console.WriteLine(String.Format("All earned money: {0:C2}",p.EarnedMoney));
+            Console.WriteLine(String.Format("All earned money: {0:C2}!",p.EarnedMoney));
+            Console.ReadLine();
         }
         static async void DoFourthMenuItemChosen()
         {
             Console.WriteLine();
-            Console.WriteLine(String.Format("Earned money during the last minute: {0:D2}", await p.GetLastEarnedMoney()));
+            Console.WriteLine(String.Format("Earned money during the last minute: {0:C2}", await p.GetLastEarnedMoney()));
+            Console.ReadLine();
         }
         static void DoThirdMenuItemChosen()
         {
@@ -110,7 +116,7 @@ namespace ConsoleParking
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < p.CarsList.Count; i++)
                     {
-                        sb.AppendFormat("{0}.{1}", i, p.CarsList[i]);
+                        sb.AppendFormat("{0}.{1}", i, p.CarsList[i].Id);
                         sb.AppendLine();
                     }
                     Console.WriteLine(sb.ToString());
@@ -119,7 +125,7 @@ namespace ConsoleParking
 
                 Car car = p.CarsList[carNumber];
 
-                Console.WriteLine(String.Format("Current balance is: {0:D2}",car.Balance));
+                Console.WriteLine(String.Format("Current balance is: {0:C2}",car.Balance));
                 double money;
 
                 do
@@ -131,7 +137,7 @@ namespace ConsoleParking
                 car.Balance += money;
 
                 Console.WriteLine("Operation completed successfully!");
-                Console.WriteLine(String.Format("Current balance is: {0:D2}", car.Balance));
+                Console.WriteLine(String.Format("Current balance is: {0:C2}", car.Balance));
                 Console.Beep();
                 Console.ReadLine();
             }
@@ -170,6 +176,7 @@ namespace ConsoleParking
                 catch(InvalidOperationException e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.ReadLine();
                 }
             }
             else
