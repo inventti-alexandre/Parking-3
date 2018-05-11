@@ -18,5 +18,14 @@ namespace Parking
             CarId = carId;
             SpentMoney = spentMoney;
         }
+
+        public override string ToString()
+        {
+            return String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
+                Environment.NewLine,
+                DateTime.Now.ToShortDateString(),
+                DateTime.Now.ToShortTimeString(),
+                SpentMoney);
+        }
     }
 }

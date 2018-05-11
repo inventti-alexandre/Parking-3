@@ -26,13 +26,6 @@ namespace Parking
                 return Settings.ParkingSpace - carsList.Count;
             }
         }
-        public int EngagedPlaces
-        {
-            get
-            {
-                return carsList.Count;
-            }
-        }
         private string filePath
         {
             get
@@ -122,6 +115,13 @@ namespace Parking
             {
                 return Convert.ToDouble(File.ReadLines(filePath).Last());
             });
+        }
+
+        public string GetLastTranscations()
+        {
+            StringBuilder sb = new StringBuilder();
+            transactionsList.ForEach(tr => sb.AppendLine(tr.ToString()).AppendLine());
+            return sb.ToString();
         }
 
         private async void logTransactions(object obj)
