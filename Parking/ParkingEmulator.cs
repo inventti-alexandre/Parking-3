@@ -96,24 +96,32 @@ namespace Parking
             return Task.Run(() =>
             {
                 StringBuilder sb = new StringBuilder();
-                using (FileStream fs = File.Open(filePath, FileMode.Open,FileAccess.Read,FileShare.Write))
+                try
                 {
-                    using (StreamReader sr = new StreamReader(fs))
+                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Write))
                     {
-                        string allInfo = sr.ReadToEnd();
-                        string[] transactions = allInfo.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (var transaction in transactions)
+                        using (StreamReader sr = new StreamReader(fs))
                         {
-                            string[] parts = transaction.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                            sb.AppendLine(String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
-                                Environment.NewLine,
-                                parts[1],
-                                parts[2],
-                                parts[3]));
+                            string allInfo = sr.ReadToEnd();
+                            string[] transactions = allInfo.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var transaction in transactions)
+                            {
+                                string[] parts = transaction.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                sb.AppendLine(String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
+                                    Environment.NewLine,
+                                    parts[1],
+                                    parts[2],
+                                    parts[3]));
+                            }
                         }
                     }
+                    return sb.ToString();
                 }
-                return sb.ToString();
+                catch (IOException)
+                {
+                    return String.Empty;
+                }
+                
             });      
         }
 
@@ -121,7 +129,15 @@ namespace Parking
         {
             return Task.Run(() =>
             {
-                return Convert.ToDouble(File.ReadLines(filePath).Last());
+                try
+                {
+                    return Convert.ToDouble(File.ReadLines(filePath).Last());
+                }
+                catch (IOException)
+                {
+                    return 0;
+                }
+                
             });
         }
 
