@@ -54,7 +54,9 @@ namespace ConsoleParking
                         DoXMenuitemChosen();
                         break;
                     default:
+                        Console.WriteLine();
                         Console.WriteLine("Nothing correct chosen!");
+                        Console.ReadLine();
                         break;
                 }
             } while (true);
@@ -257,27 +259,7 @@ namespace ConsoleParking
             Console.WriteLine("0.Clear console");
             Console.WriteLine("x.Exit");
         }
-        static void doSmth(object obj)
-        {
-            t = new Timer(doSmth, new object(), 5000, 5000);
-            Car c = new Car("Blue car", 50, CarType.Bus);
-            Car b = new Car("Green car", 50, CarType.Motorcycle);
-            p.AddCar(c);
-            p.AddCar(b);
-            Console.Read();
-            try
-            {
-
-                //Console.WriteLine("Last money: "+p.GetLastEarnedMoney().GetAwaiter().GetResult());
-                Console.WriteLine("Free places: " + p.FreePlaces.ToString());
-                Console.WriteLine("Engaged places: " + p.EngagedPlaces.ToString());
-                Console.WriteLine("Log: " + p.GetTransactionsLog().GetAwaiter().GetResult());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception: \n"+e.Message);
-            }
-        }
+       
 
 
     }
