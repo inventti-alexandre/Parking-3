@@ -34,7 +34,6 @@ namespace Parking
                 return CarsList.Count;
             }
         }
-
         private string filePath
         {
             get
