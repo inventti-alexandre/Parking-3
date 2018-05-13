@@ -21,10 +21,11 @@ namespace Parking
 
         public override string ToString()
         {
-            return String.Format("Transaction date:{1}{0}Time:{2}{0}Money:{3}{0}", Environment.NewLine,
-                            DateTime.Now.ToShortDateString(),
-                            DateTime.Now.ToShortTimeString(),
-                            SpentMoney);
+            return String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
+                Environment.NewLine,
+                DateTime.Now.ToShortDateString(),
+                DateTime.Now.ToShortTimeString(),
+                SpentMoney);
         }
     }
 }

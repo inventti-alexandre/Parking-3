@@ -44,18 +44,16 @@ namespace Parking
             Balance = balance;
             CarType = type;
         }
-    }
 
-    public class CarEqualityComparer : IEqualityComparer<Car>
-    {
-        public bool Equals(Car x, Car y)
+        public override string ToString()
         {
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode(Car obj)
-        {
-            return obj.Id.GetHashCode();
+            return String.Format("Car identifier: '{1}'{0}Balance: {2}{0}Type:{3}{0}",
+                Environment.NewLine,
+                Id,
+                Balance,
+                CarType.ToString());
         }
     }
+
+
 }
