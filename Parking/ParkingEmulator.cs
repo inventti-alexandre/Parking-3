@@ -160,7 +160,7 @@ namespace Parking
 
             if (selectedStransaction.Count == 0)
             {
-                return String.Format("There were no transactions with this car during last minute: {0}{1}",Environment.NewLine,car.ToString());
+                return String.Format("There were no transactions with this car: {0}{1}{0} during last minute", Environment.NewLine,car.ToString());
             }
             return sb.ToString();
         }
@@ -174,7 +174,7 @@ namespace Parking
             bool isExists = transactionsList.Any(tr => tr.CarId == carId);
             if (!isExists)
             {
-                throw new ArgumentException(String.Format("Parking doesn't have a car that matches input '{0}' argument", nameof(carId)));
+                throw new ArgumentException(String.Format("Parking doesn't have a car with Id that matches input '{0}' argument", nameof(carId)));
             }
 
             StringBuilder sb = new StringBuilder();
@@ -183,7 +183,7 @@ namespace Parking
 
             if (selectedStransaction.Count == 0)
             {
-                return String.Format("There were no transactions with a car that matches '{0}' argument during last minute", nameof(carId));
+                return String.Format("There were no transactions with a car with Id that matches '{0}' argument during last minute", nameof(carId));
             }
             return sb.ToString();
         }
