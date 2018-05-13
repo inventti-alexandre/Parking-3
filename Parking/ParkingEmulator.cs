@@ -27,7 +27,15 @@ namespace Parking
                 return Settings.ParkingSpace - CarsList.Count;
             }
         }
+
+        public int EngagedPlaces
+        {
+            get
+            {
                 return CarsList.Count;
+            }
+        }
+
         private string filePath
         {
             get
@@ -38,8 +46,8 @@ namespace Parking
         }     
         private ParkingEmulator()
         {
-            stateTimer = new Timer(changeParkingState, new object(), 0, Settings.Timeout);
-            logTimer = new Timer(logTransactions, new object(), 0, 5000);
+            stateTimer = new Timer(changeParkingState, new object(), Settings.Timeout, Settings.Timeout);
+            logTimer = new Timer(logTransactions, new object(), 60000, 60000);
             CarsList = new List<Car>();
             transactionsList = new List<Transaction>();
         }
@@ -90,24 +98,32 @@ namespace Parking
             return Task.Run(() =>
             {
                 StringBuilder sb = new StringBuilder();
-                using (FileStream fs = File.Open(filePath, FileMode.Open,FileAccess.Read,FileShare.Write))
+                try
                 {
-                    using (StreamReader sr = new StreamReader(fs))
+                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Write))
                     {
-                        string allInfo = sr.ReadToEnd();
-                        string[] transactions = allInfo.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (var transaction in transactions)
+                        using (StreamReader sr = new StreamReader(fs))
                         {
-                            string[] parts = transaction.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                            sb.AppendLine(String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
-                                Environment.NewLine,
-                                parts[1],
-                                parts[2],
-                                parts[3]));
+                            string allInfo = sr.ReadToEnd();
+                            string[] transactions = allInfo.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var transaction in transactions)
+                            {
+                                string[] parts = transaction.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                sb.AppendLine(String.Format("Transaction record date:{1}{0}Record time:{2}{0}Earned money:{3}{0}",
+                                    Environment.NewLine,
+                                    parts[1],
+                                    parts[2],
+                                    parts[3]));
+                            }
                         }
                     }
+                    return sb.ToString();
                 }
-                return sb.ToString();
+                catch (IOException)
+                {
+                    return String.Empty;
+                }
+                
             });      
         }
 
@@ -115,7 +131,15 @@ namespace Parking
         {
             return Task.Run(() =>
             {
-                return Convert.ToDouble(File.ReadLines(filePath).Last());
+                try
+                {
+                    return Convert.ToDouble(File.ReadLines(filePath).Last());
+                }
+                catch (IOException)
+                {
+                    return 0;
+                }
+                
             });
         }
 
@@ -126,12 +150,6 @@ namespace Parking
             return sb.ToString();
         }
 
-        public string GetLastTranscations()
-        {
-            StringBuilder sb = new StringBuilder();
-            transactionsList.ForEach(tr => sb.AppendLine(tr.ToString()).AppendLine());
-            return sb.ToString();
-        }
 
         private async void logTransactions(object obj)
         {
