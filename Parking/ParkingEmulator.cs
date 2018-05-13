@@ -34,7 +34,6 @@ namespace Parking
                 return CarsList.Count;
             }
         }
-
         private string filePath
         {
             get
@@ -142,10 +141,50 @@ namespace Parking
             });
         }
 
-        public string GetLastTranscations()
+        public string GetLastTransactions()
         {
             StringBuilder sb = new StringBuilder();
             transactionsList.ForEach(tr => sb.AppendLine(tr.ToString()).AppendLine());
+            return sb.ToString();
+        }
+
+        public string GetLastTransactions(Car car)
+        {
+            if (car == null)
+            {
+                throw new ArgumentNullException(String.Format("Input '{0}' argument was null!", nameof(car)));
+            }
+
+            StringBuilder sb = new StringBuilder();
+            var selectedStransaction = transactionsList.FindAll(tr => tr.CarId == car.Id);
+
+            if (selectedStransaction.Count == 0)
+            {
+                return String.Format("There were no transactions with this car: {0}{1}{0} during last minute", Environment.NewLine,car.ToString());
+            }
+            return sb.ToString();
+        }
+
+        public string GetLastTransactions(string carId)
+        {
+            if (carId == null)
+            {
+                throw new ArgumentNullException(String.Format("Input '{0}' argument was null!", nameof(carId)));
+            }
+            bool isExists = transactionsList.Any(tr => tr.CarId == carId);
+            if (!isExists)
+            {
+                throw new ArgumentException(String.Format("Parking doesn't have a car with Id that matches input '{0}' argument", nameof(carId)));
+            }
+
+            StringBuilder sb = new StringBuilder();
+            var selectedStransaction = transactionsList.FindAll(tr => tr.CarId == carId);
+            
+
+            if (selectedStransaction.Count == 0)
+            {
+                return String.Format("There were no transactions with a car with Id that matches '{0}' argument during last minute", nameof(carId));
+            }
             return sb.ToString();
         }
 
