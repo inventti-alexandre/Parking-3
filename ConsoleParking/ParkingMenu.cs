@@ -95,7 +95,7 @@ namespace ConsoleParking
         private void DoSixthMenuItemChosen()
         {
             Console.WriteLine();
-            Console.WriteLine(String.Format("Transactions during the last minute:{0}{1}", Environment.NewLine, parking.GetLastTranscations()));
+            Console.WriteLine(String.Format("Transactions during the last minute:{0}{1}", Environment.NewLine, parking.GetLastTransactions()));
             Console.ReadLine();
         }
         private void DoFifthMenuItemChosen()
