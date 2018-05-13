@@ -63,7 +63,7 @@ namespace Parking
             {
                 throw new ArgumentNullException(String.Format("Input '{0}' argumet was null!", nameof(car)));
             }
-            if (!CarsList.Contains(car,new CarEqualityComparer()))
+            if (!CarsList.Any(c=>c.Id==car.Id))
             {
                 CarsList.Add(car);
             }
@@ -80,7 +80,7 @@ namespace Parking
                 throw new ArgumentNullException(String.Format("Input '{0}' argument was null!", nameof(car)));
             }
 
-            if(CarsList.Contains(car,new CarEqualityComparer()))
+            if(CarsList.Any(c => c.Id == car.Id))
             {
                 if (car.Balance > 0)
                     CarsList.Remove(car);
@@ -151,11 +151,9 @@ namespace Parking
         }
 
 
-        private async void logTransactions(object obj)
+        private void logTransactions(object obj)
         {
-            
-            await Task.Run(() =>
-            {
+           
                 using (FileStream fs = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Append,FileAccess.Write,FileShare.Read))
                 {
                     using (StreamWriter sw = new StreamWriter(fs))
@@ -175,12 +173,10 @@ namespace Parking
                         sw.WriteLine(strToLog);
                     }
                 }
-            });
         }
 
-        private async void changeParkingState(object obj)
+        private void changeParkingState(object obj)
         {
-            await Task.Run(() => {
                 lock (transactionsList)
                 {
                     CarsList.ForEach(car =>
@@ -197,7 +193,6 @@ namespace Parking
 
                     });
                 } 
-            });
         }
     }
 }
