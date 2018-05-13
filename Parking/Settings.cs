@@ -34,6 +34,10 @@ namespace Parking
         /// Fine coefficient.
         /// </summary>
         public static double Fine { get; }
+
+        public static string FileName = "Transactions.log";
+
+        public static int LogTimeout = 60000;
         static Settings()
         {
             Timeout = 3000;

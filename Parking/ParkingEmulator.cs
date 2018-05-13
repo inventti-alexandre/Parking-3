@@ -16,7 +16,6 @@ namespace Parking
         
         private List<Transaction> transactionsList;
         private static Lazy<ParkingEmulator> instance = new Lazy<ParkingEmulator>(() => new ParkingEmulator());
-        private string fileName= "Transactions.log";
 
         public List<Car> CarsList { get; }
         public double EarnedMoney { get; set; }
@@ -41,13 +40,13 @@ namespace Parking
             get
             {
                 string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                return Path.Combine(directory, fileName);
+                return Path.Combine(directory, Settings.FileName);
             }
         }     
         private ParkingEmulator()
         {
             stateTimer = new Timer(changeParkingState, new object(), Settings.Timeout, Settings.Timeout);
-            logTimer = new Timer(logTransactions, new object(), 60000, 60000);
+            logTimer = new Timer(logTransactions, new object(), Settings.LogTimeout, Settings.LogTimeout);
             CarsList = new List<Car>();
             transactionsList = new List<Transaction>();
         }
