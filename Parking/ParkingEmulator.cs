@@ -183,7 +183,7 @@ namespace Parking
                         double requiredMoney;
                         if (Settings.PriceSet.TryGetValue(car.CarType, out requiredMoney))
                         {
-                            double spentMoney = car.Balance >= requiredMoney ? requiredMoney : requiredMoney * Settings.Fine;
+                            double spentMoney = car.Balance >= requiredMoney ? requiredMoney : (car.Balance>0 ? (requiredMoney-car.Balance)*Settings.Fine : requiredMoney * Settings.Fine);
                             car.Balance -= spentMoney;
                             this.EarnedMoney += spentMoney;
                             Transaction tr = new Transaction(car.Id, spentMoney);
