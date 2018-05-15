@@ -6,6 +6,25 @@ using System.Threading.Tasks;
 
 namespace Parking
 {
+    public static class CarTypeConverter
+    {
+        public static CarType ToCarType(string carType)
+        {
+            switch (carType.ToLower())
+            {
+                case "passenger":
+                    return CarType.Passenger;
+                case "bus":
+                    return CarType.Bus;
+                case "truck":
+                    return CarType.Truck;
+                case "motorcycle":
+                    return CarType.Motorcycle;
+                default:
+                    throw new ArgumentException("There are no CarType matching input string value");
+            }
+        }
+    }
     /// <summary>
     /// Reprsents actual types of cars
     /// </summary>
